@@ -51,3 +51,5 @@ group :development, :test do
 end
 
 ruby "3.2.2"
+
+gem "devise", "~> 4.9"
