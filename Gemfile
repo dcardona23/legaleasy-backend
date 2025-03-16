@@ -46,4 +46,4 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 end
 
-ruby "3.2.0"
+ruby "3.2.2"
