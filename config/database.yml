@@ -64,7 +64,7 @@ test:
   encoding: unicode
   database: backend_test
   username: postgres
-  password:
+  password: password
   host: localhost
   port: 5432
 
