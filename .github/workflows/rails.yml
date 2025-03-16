@@ -39,10 +39,9 @@ jobs:
         run: |
           gem install bundler
           bundle install
-          yarn install
 
       - name: Run database migrations
-        run: bin/rails db:create db:migrate RAILS_ENV=test
+        run: rails db:create db:migrate 
 
       - name: Run tests
         run: bin/rails test
