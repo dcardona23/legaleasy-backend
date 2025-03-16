@@ -17,9 +17,9 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_DB: test
+          POSTGRES_DB: backend_test
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         options: >-
           --health-cmd="pg_isready -U postgres"
           --health-interval=10s
@@ -39,10 +39,13 @@ jobs:
         run: |
           gem install bundler
           bundle install
-          yarn install
+
+      - name: Set up database environment variables
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/backend_test" >> .env
 
       - name: Run database migrations
-        run: bin/rails db:create db:migrate RAILS_ENV=test
+        run: RAILS_ENV=test rails db:create db:migrate
 
       - name: Run tests
-        run: bin/rails test
+        run: RAILS_ENV=test bin/rails test
