@@ -44,6 +44,13 @@ jobs:
         run: |
           echo "DATABASE_URL=postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/backend_test" >> .env
 
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for PostgreSQL to be ready..."
+            sleep 2
+          done
+
       - name: Run database migrations
         run: RAILS_ENV=test rails db:drop db:create db:migrate
 
