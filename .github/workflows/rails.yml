@@ -40,6 +40,10 @@ jobs:
           gem install bundler
           bundle install
 
+      - name: Set up database environment variables
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/backend_test" >> .env
+
       - name: Run database migrations
         run: RAILS_ENV=test rails db:create db:migrate
 
