@@ -48,6 +48,8 @@ group :development, :test do
   gem "dotenv-rails"
 
   gem "rspec-rails"
+
+  gem "pry-rails"
 end
 
 ruby "3.2.2"
