@@ -92,8 +92,10 @@ production:
   primary: &primary_production
     <<: *default
     database: backend_production
-    username: backend
-    password: <%= ENV["BACKEND_DATABASE_PASSWORD"] %>
+    username: postgres
+    password: <%= ENV['POSTGRES_PASSWORD'] %>
+    host: localhost
+    port: 5432
   cache:
     <<: *primary_production
     database: backend_production_cache
