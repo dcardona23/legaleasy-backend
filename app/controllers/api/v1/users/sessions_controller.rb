@@ -10,7 +10,15 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
 
   # POST /resource/sign_in
   def create
-    super
+    super do |resource|
+      if resource.persisted?
+        render json: { message: "Session started successfully", user: resource }, status: :created
+        return
+      else
+        render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity
+        return
+      end
+    end
   end
 
   # DELETE /resource/sign_out
