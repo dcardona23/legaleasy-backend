@@ -6,7 +6,16 @@ class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
 
   # POST /resource
   def create
-    super
+    super do |resource|
+      binding.pry
+      if resource.persisted?
+        render json: { message: "User created successfully", user: resource }, status: :created
+        return
+      else
+        render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity
+        return
+      end
+    end
   end
 
   # GET /resource/edit
