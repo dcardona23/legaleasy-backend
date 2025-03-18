@@ -7,7 +7,6 @@ class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
   # POST /resource
   def create
     super do |resource|
-      binding.pry
       if resource.persisted?
         render json: { message: "User created successfully", user: resource }, status: :created
         return
