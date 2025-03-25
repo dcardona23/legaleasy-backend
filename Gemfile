@@ -50,6 +50,8 @@ group :development, :test do
   gem "rspec-rails"
 
   gem "pry-rails"
+
+  gem "simplecov"
 end
 
 ruby "3.2.2"
