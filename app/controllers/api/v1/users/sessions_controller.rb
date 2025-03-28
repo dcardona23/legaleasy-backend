@@ -1,4 +1,5 @@
 class Api::V1::Users::SessionsController < Devise::SessionsController
+  include ActionController::MimeResponds
   before_action :configure_sign_in_params, only: [ :create ]
 
   # POST /resource/sign_in
@@ -14,9 +15,8 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
   end
 
   # DELETE /resource/sign_out
-  def destroy
-    head :no_content
-  end
+  # def destroy
+  # end
 
   protected
 
