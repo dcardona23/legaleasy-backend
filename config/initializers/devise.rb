@@ -315,4 +315,8 @@ Devise.setup do |config|
       jwt.secret = Rails.application.credentials.devise_jwt_secret_key
       jwt.expiration_time = 30.minutes.to_i
   end
+
+  Warden::JWTAuth.configure do |config|
+    config.revocation_strategies = {}  # This disables the revocation logic
+  end
 end
