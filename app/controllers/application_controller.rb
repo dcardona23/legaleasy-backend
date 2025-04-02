@@ -15,7 +15,7 @@ class ApplicationController < ActionController::API
   def signed_in?
     @current_user_id.present?
   end
-  
+
   def process_token
     if request.headers["Authorization"].present?
       token = request.headers["Authorization"].split(" ")[1].remove('"')
