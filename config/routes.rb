@@ -1,13 +1,15 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      devise_for :users, controllers: {
-        sessions: "api/v1/users/sessions",
-        registrations: "api/v1/users/registrations",
-        confirmations: "api/v1/users/confirmations",
-        unlocks: "api/v1/users/unlocks"
+      devise_for :users, path_names: {
+        sign_in: "login",
+        sign_out: "logout",
+        registration: "signup"
+      },
+      controllers: {
+        sessions: "users/sessions",
+        registrations: "users/registrations"
       }
-
       resources :openai, only: :create
     end
   end
