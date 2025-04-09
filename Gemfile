@@ -64,3 +64,5 @@ end
 ruby "3.2.2"
 
 gem "devise", "~> 4.9"
+
+gem "faraday"
