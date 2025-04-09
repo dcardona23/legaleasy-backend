@@ -1,5 +1,3 @@
-# config/initializers/token_revoker_patch.rb
-
 module Warden
   module JWTAuth
     class TokenRevoker
