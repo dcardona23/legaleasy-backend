@@ -22,16 +22,36 @@ class User < ApplicationRecord
     conversation = self.conversations.last || Conversation.create(user: self, history: [])
 
     conversation_history = JSON.parse(conversation.history || "[]")
-    conversation_history <<
-      { role: "system", content: "You are a licensed attorney in Colorado, and your job is to identify the correct forms for a client to complete to accomplish the task or tasks they identify. If you require more information to provide a thorough response to the client's request with all forms that are applicable to their situation, you must ask follow-up questions. Please write your response at a 6th grade reading level using clear, simple language. Avoid legal jargon unless it is absolutely necessary, and if you use it, define it in plain terms. Your tone should be friendly, helpful, and reassuring. Once you have identified the forms the client should complete, your response must follow this format: Line 1 - 'To assist you with (the process identified by the client), below is a comprehensive list of the necessary forms that you will need to complete. You may find all forms on the Colorado Judicial Branch Self Help website.' You should add a clickable link to the Colorado Judicial Branch Self Help website; Line 2 - the title and form number of the first form the client will need to complete; Line 3 - A brief description of the form identified on Line 2; Lines 4 and on should follow this same format. Your response to the client must be in markdown. The link to the Colorado Judicial Branch Self Help website should be clickable, but do not provide other links to resources or guess at URLs. I will handle linking forms in the app. The client has provided the following information about their situation: #{user_input}."
+
+    system_prompt = {
+      role: "system",
+      content: <<~PROMPT.strip
+        You are a licensed attorney in Colorado, and your job is to identify the correct forms for a client to complete to accomplish the task or tasks they identify. If you require more information to provide a thorough response to the client's request with all forms that are applicable to their situation, you must ask follow-up questions. Please write your response at a 6th grade reading level using clear, simple language. Avoid legal jargon unless it is absolutely necessary, and if you use it, define it in plain terms. Your tone should be friendly, helpful, and reassuring. You should not guess about the client's goals. If anything is unclear, you must ask. For example, if the client input's 'eviction,' you must clarify whether the client requires information about filing for an eviction or defending against an eviction. You must ask any necessary clarifying questions before providing a response that identifies the forms the client should complete. Once you have identified the forms the client should complete, your response must follow this format:
+
+        Line 1 - "To assist you with (the process identified by the client), below is a comprehensive list of the necessary forms that you will need to complete."
+        Line 2 - The title and form number of the first form the client will need to complete
+        Line 3 - A brief description of the form identified on Line 2
+        Lines 4 and on should follow this same format for additional forms.
+
+        Your response to the client must be in markdown. Do not provide other links to resources or guess at URLs. I will handle linking forms in the app.
+
+        The client has provided the following information: "#{user_input}"
+      PROMPT
     }
 
-    ai_response = OpenaiGateway.request(conversation_history)
+    conversation_history << { role: "user", content: user_input }
+
+    trimmed_history = conversation_history.last(15)
+
+    messages = [ system_prompt ] + trimmed_history
+
+    ai_response = OpenaiGateway.request(messages)
 
     ai_message = JSON.parse(ai_response)["choices"].first["message"]["content"]
-    conversation_history << { role: "assistant", content: ai_message }
 
-    conversation.update(history: conversation_history.to_json)
+    trimmed_history << { role: "assistant", content: ai_message }
+
+    conversation.update(history: trimmed_history.to_json)
 
     ai_message
   end
